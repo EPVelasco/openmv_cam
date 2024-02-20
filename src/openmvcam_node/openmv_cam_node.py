@@ -16,7 +16,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 class openmv_cam_client(object):
     def __init__(self):
-        self.port_name = '/dev/ttyACM0'
+        self.port_name = rospy.get_param('~port_name', '/dev/ttyACM0')
         self.serial_port = None
         self.img = None
         self.key = 0
@@ -28,7 +28,10 @@ class openmv_cam_client(object):
     def initialize_serial(self):
 
         self.serial_port = serial.Serial(self.port_name, baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
-                 xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=None, dsrdtr=True)
+             xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=None, dsrdtr=True)
+
+        #self.serial_port = serial.Serial(self.port_name, baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
+        #         xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=None, dsrdtr=True)
 
 
     def read_image(self):

@@ -6,12 +6,11 @@
   <arg name="rviz" default="false" doc="whether to run RVIZ"/>
 
   <!-- Load the Open MV Camera node -->
-  <node respawn="true" pkg ="openmv_cam" type="openmv_cam_node.py" name="openmv_cam_node" />
-
+  <param name="serial_port" value="/dev/ttyACM0" />
+  <node respawn="true" pkg ="openmv_cam" type="openmv_cam_node.py" name="openmv_cam_node" >
+        <param name="port_name" value="$(arg serial_port)" />
+  </node>
   <!-- Load RVIZ -->
   <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find openmv_cam)/openMV_cam.rviz" />
 
 </launch>
-
-
-
