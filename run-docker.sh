@@ -1,7 +1,7 @@
 #!/bin/bash
 
 xhost +local:root
-IMG=wilselby/openMV_cam:latest
+IMG=openmv-docker
 
 # If NVIDIA is present, use Nvidia-docker
 if test -c /dev/nvidia0
