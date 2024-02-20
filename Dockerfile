@@ -3,12 +3,7 @@ FROM ros:melodic-perception-bionic
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 
-# Some packages copied from:
-# https://gitlab.com/nvidia/opengl/blob/ubuntu16.04/base/Dockerfile
-
-RUN apt-get update \
-  && apt-get dist-upgrade -y \
-  && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y --no-install-recommends \
     git \
     build-essential \
     dialog \
@@ -29,12 +24,37 @@ RUN apt-get update \
     tmux \
  && rm -rf /var/lib/apt/lists/*
 
-# nvidia-container-runtime
-ENV NVIDIA_VISIBLE_DEVICES \
-        ${NVIDIA_VISIBLE_DEVICES:-all}
-ENV NVIDIA_DRIVER_CAPABILITIES \
-        ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics,compat32,utility
+# Now create the user
+ARG UID=1000
+ARG GID=1000
+RUN addgroup --gid ${GID} openmv
+RUN adduser --gecos "ROS User" --disabled-password --uid ${UID} --gid ${GID} openmv
+RUN usermod -a -G dialout openmv
+RUN mkdir config && echo "ros ALL=(ALL) NOPASSWD: ALL" > config/99_aptget
+RUN cp config/99_aptget /etc/sudoers.d/99_aptget
+RUN chmod 0440 /etc/sudoers.d/99_aptget && chown root:root /etc/sudoers.d/99_aptget
 
-ADD /scripts /scripts
+ENV HOME /home/openmv
+    
+## repository 
+RUN mkdir -p ${HOME}/catkin_ws/src 
+WORKDIR ${HOME}/catkin_ws/src
+RUN git clone https://github.com/EPVelasco/openmv_cam.git && \
+    git clone https://github.com/ros-perception/camera_info_manager_py 
+    
 
-RUN bash /scripts/install_scripts_for_docker.bash
+# Compile the catkin workspace
+RUN . /opt/ros/melodic/setup.sh && \
+    cd ${HOME}/catkin_ws && \
+    catkin_make --only-pkg-with-deps camera_info_manager_py &&\
+    catkin_make --only-pkg-with-deps openmv_cam
+    
+# pip and pyserial
+RUN apt-get update && apt-get install -y curl  && curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+RUN python2 get-pip.py && python2 -m pip install pyserial
+
+## usb tools and vim 
+RUN apt-get install -y usbutils vim
+
+WORKDIR ${HOME}/catkin_ws
+
