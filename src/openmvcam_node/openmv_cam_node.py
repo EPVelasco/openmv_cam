@@ -63,6 +63,11 @@ class openmv_cam_client(object):
                 imgmsg = self.bridge.cv2_to_imgmsg(self.img, 'bgr8')
             else:
                 imgmsg = self.bridge.cv2_to_imgmsg(self.img, 'mono8')
+
+            # Crear un objeto Header y asignarle el timestamp actual
+            header = Header()
+            header.stamp = rospy.Time.now()
+            imgmsg.header = header
             self.pub_raw.publish(imgmsg)
         except CvBridgeError as e:
             print(e)
