@@ -13,6 +13,7 @@ import roslib
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
+from std_msgs.msg import Header
 
 class openmv_cam_client(object):
     def __init__(self):
