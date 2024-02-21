@@ -58,7 +58,7 @@ class openmv_cam_client(object):
         compressed.data = np.array(cv2.imencode('.jpg', self.img)[1]).tostring()
         self.pub_comp.publish(compressed)
         """
-
+        header = Header(stamp=rospy.Time.now())
         try:
             if np.size(self.img.shape) == 3:
                 imgmsg = self.bridge.cv2_to_imgmsg(self.img, 'bgr8')
@@ -66,8 +66,7 @@ class openmv_cam_client(object):
                 imgmsg = self.bridge.cv2_to_imgmsg(self.img, 'mono8')
 
             # Crear un objeto Header y asignarle el timestamp actual
-            header = Header()
-            header.stamp = rospy.Time.now()
+            
             imgmsg.header = header
             self.pub_raw.publish(imgmsg)
         except CvBridgeError as e:
