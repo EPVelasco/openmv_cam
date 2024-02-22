@@ -77,6 +77,13 @@ class openmv_cam_client(object):
         cv2.imshow("Stream:", self.img)
         self.key = cv2.waitKey(20)
 
+    def disconnect(self):
+        if self.serial_port and self.serial_port.is_open:
+            self.serial_port.close()
+            print("Disconnected successfully.")
+        else:
+            None
+
     def run(self):
 
         self.initialize_serial()
@@ -120,8 +127,10 @@ if __name__ == '__main__':
         main(sys.argv, cam)
     except(rospy.ROSInterruptException, KeyboardInterrupt):
         print("Error System")
+        cam.disconnect()
         pass
     else:
+        cam.disconnect()
         print("Complete Execution")
         pass
 
