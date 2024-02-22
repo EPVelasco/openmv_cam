@@ -100,11 +100,9 @@ class openmv_cam_client(object):
             rate.sleep()
             #print("FPS: ", 1.0/(time.time()-start_time))
 
-def main(args):
+def main(args, cam):
 
     rospy.init_node('OpenMV_cam', anonymous=True)
-
-    cam = openmv_cam_client()
 
     cam.run()
 
@@ -117,8 +115,15 @@ def main(args):
 
 # Main
 if __name__ == '__main__':
-    main(sys.argv)
-
+    try:
+        cam = openmv_cam_client()
+        main(sys.argv, cam)
+    except(rospy.ROSInterruptException, KeyboardInterrupt):
+        print("Error System")
+        pass
+    else:
+        print("Complete Execution")
+        pass
 
     
          
