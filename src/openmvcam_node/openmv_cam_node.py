@@ -29,7 +29,7 @@ class openmv_cam_client(object):
     def initialize_serial(self):
 
         self.serial_port = serial.Serial(self.port_name, baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
-             xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=None, dsrdtr=True)
+             xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=2, dsrdtr=True)
 
         #self.serial_port = serial.Serial(self.port_name, baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
         #         xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=None, dsrdtr=True)
@@ -90,9 +90,10 @@ class openmv_cam_client(object):
 
         #pub = initialize_publishers()
 
+        rate = rospy.Rate(10) # Run at 10Hz
+
         while not rospy.is_shutdown():
 
-            rate = rospy.Rate(10) # Run at 10Hz
 
             #start_time = time.time()
             self.read_image()
@@ -100,7 +101,7 @@ class openmv_cam_client(object):
             self.publish_image()            
             
             if self.key == 27:
-                #seial_port.close()
+                self.seial_port.close()
                 cv2.destroyWindow("preview")          
                 break
 
@@ -108,18 +109,9 @@ class openmv_cam_client(object):
             #print("FPS: ", 1.0/(time.time()-start_time))
 
 def main(args, cam):
-
     rospy.init_node('OpenMV_cam', anonymous=True)
-
     cam.run()
-
-    try:
-        rospy.spin()
-    except KeyboardInterrupt:
-        print("Shutting down")
-    cv2.destroyAllWindows()
-
-
+    return None
 # Main
 if __name__ == '__main__':
     try:
