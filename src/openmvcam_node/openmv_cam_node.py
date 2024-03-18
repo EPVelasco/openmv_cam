@@ -29,7 +29,7 @@ class openmv_cam_client(object):
     def initialize_serial(self):
 
         self.serial_port = serial.Serial(self.port_name, baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
-             xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=2, dsrdtr=True)
+             xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=None, dsrdtr=True)
 
         #self.serial_port = serial.Serial(self.port_name, baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
         #         xonxoff=False, rtscts=False, stopbits=serial.STOPBITS_ONE, timeout=None, dsrdtr=True)
