@@ -58,7 +58,7 @@ RUN . /opt/ros/melodic/setup.sh && \
     catkin_make --only-pkg-with-deps openmv_cam
     
 WORKDIR ${HOME}/catkin_ws
-CMD ["bash", "-c", "cd ${HOME}/catkin_ws/src/openmv_cam && pull"]
+CMD ["bash", "-c", "cd ${HOME}/catkin_ws/src/openmv_cam && git pull"]
 #CMD ["bash", "-c", "source ${HOME}/catkin_ws/devel/setup.bash && rosrun openmv_cam openmv_cam_node.py"]
 CMD ["bash", "-c", "source ${HOME}/catkin_ws/devel/setup.bash && roslaunch openmv_cam openmv_cam.launch serial_port:=/dev/ttyACM10"] ## you can change the port number
 
