@@ -20,6 +20,7 @@ class openmv_cam_client(object):
         self.port_name = rospy.get_param('~port_name', '/dev/ttyACM0')
         self.serial_port = None
         self.img = None
+        self.img_aux = None
         self.key = 0
         self.bridge = CvBridge()
         self.pub_raw = rospy.Publisher("/openmv_cam/image/raw", Image, queue_size = 10)
@@ -47,7 +48,22 @@ class openmv_cam_client(object):
         x = np.fromstring(buf, dtype='uint8')
 
         # Decode the array into an image
-        self.img = cv2.imdecode(x, cv2.IMREAD_UNCHANGED)
+        self.img_aux = cv2.imdecode(x, cv2.IMREAD_UNCHANGED)
+
+        # Get the dimensions of the image
+        (h, w) = self.img_aux.shape[:2]
+
+        # Calculate the center of the image
+        center = (w // 2, h // 2)
+
+        # Define the rotation angle in degrees
+        angle = 90  # Rotate by 90 degrees
+
+        # Get the rotation matrix using OpenCV
+        rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+
+        # Perform the rotation
+        self.img = cv2.warpAffine(self.img_aux, rotation_matrix, (w, h))
 
     def publish_image(self):
 
