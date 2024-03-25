@@ -58,6 +58,7 @@ class openmv_cam_client(object):
 
         # Define the rotation angle in degrees
         angle = -90  # Rotate by 90 degrees
+        aux_variable = "Check"
 
         # Get the rotation matrix using OpenCV
         rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
